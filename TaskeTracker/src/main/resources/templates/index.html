@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>teste</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Login</title>
+    <!-- Link para o CSS do Bulma -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+        }
+    </style>
 </head>
 <body>
-
+<div class="login-container">
+    <div class="box">
+        <h1 class="title has-text-centered">Login</h1>
+        <form>
+            <div class="field">
+                <label class="label" for="usuario">Usuário</label>
+                <div class="control">
+                    <input class="input" type="usuario" id="usuario" placeholder="Seu usuário" required>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" for="password">Senha</label>
+                <div class="control">
+                    <input class="input" type="password" id="password" placeholder="Sua senha" required>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <button class="button is-primary is-fullwidth" type="submit">Entrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>
