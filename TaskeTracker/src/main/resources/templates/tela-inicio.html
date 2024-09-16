@@ -13,6 +13,9 @@
             justify-content: space-between;
             align-items: center;
         }
+        .completed-task {
+            background-color: #d4edda; /* Verde claro */
+        }
     </style>
 
 </head>
@@ -37,15 +40,20 @@
             </thead>
             <tbody>
             <!-- Exemplo de linha de dados; substitua com dados reais -->
-            <tr>
-                <td>1</td>
-                <td>Descrever a tarefa</td>
-                <td>2024-09-01</td>
-                <td>2024-09-10</td>
-                <td><input type="checkbox" disabled checked></td>
-                <td>42</td>
+            <tr th:each="tarefas : ${tarefas}" th:classappend="${tarefas.concluida ? 'completed-task' : ''}">
+                <td th:text="${tarefas.id}"></td>
+                <td th:text="${tarefas.descricao}"></td>
+                <td th:text="${#temporals.format(tarefas.dataInicio, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${#temporals.format(tarefas.dataLimite, 'dd/MM/yyyy HH:mm')}"></td>
+                <td>
+                    <form th:action="@{/atualizar-tarefa}" method="post">
+                        <input type="hidden" name="id" th:value="${tarefas.id}" />
+                        <input type="checkbox" name="concluida" th:checked="${tarefas.concluida}" value="true"/>
+                        <button type="submit" class="button is-small is-primary">Salvar</button>
+                    </form>
+                </td>
+                <td th:text="${tarefas.usuario != null ? tarefas.usuario.id : 'N/A'}"></td>
             </tr>
-            <!-- Adicione mais linhas conforme necessário -->
             </tbody>
         </table>
     </div>

@@ -17,15 +17,13 @@ public class Tarefas {
     private String descricao;
 
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime dataInicio;
 
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime dataLimite;
 
     @Column(nullable = false)
-    private Boolean concluida;
+    private Boolean concluida = false;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
@@ -35,7 +33,9 @@ public class Tarefas {
     public Tarefas() {
     }
 
-    public Tarefas(String descricao, LocalDateTime dataInicio, LocalDateTime dataLimite, Boolean concluida, Usuario usuario) {
+    public Tarefas(String descricao, LocalDateTime dataInicio,
+                   LocalDateTime dataLimite, Boolean concluida,
+                   Usuario usuario) {
         this.descricao = descricao;
         this.dataInicio = dataInicio;
         this.dataLimite = dataLimite;
