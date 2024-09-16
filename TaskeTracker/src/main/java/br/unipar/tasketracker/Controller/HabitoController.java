@@ -1,17 +1,22 @@
 package br.unipar.tasketracker.Controller;
 
+import br.unipar.tasketracker.Repository.HabitoRepository;
 import br.unipar.tasketracker.Service.HabitoService;
 import br.unipar.tasketracker.model.Habitos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/habitos")
+@Controller
 public class HabitoController {
+
+    @Autowired
+    private HabitoRepository habitoRepository;
 
     @Autowired
     private HabitoService habitoService;
@@ -33,9 +38,19 @@ public class HabitoController {
         return habitoService.findByUsuarioId(usuarioId);
     }
 
-    @PostMapping
-    public Habitos createHabito(@RequestBody Habitos habito) {
-        return habitoService.save(habito);
+    @PostMapping("/adicionar-habito")
+    public String adicionarHabito(@RequestParam("novaDescricao") String novaDescricao, Model model) {
+        // Salvar o novo hábito no banco de dados
+        Habitos novoHabito = new Habitos();
+        novoHabito.setDescricao(novaDescricao);
+        habitoRepository.save(novoHabito);
+
+        // Atualizar a lista de descrições para o dropdown
+        List<String> descricoes = habitoRepository.findAllDescriptions();
+        model.addAttribute("descricoes", descricoes);
+
+        // Retornar à página principal com o dropdown atualizado
+        return "redirect:/";  // Retorna para a página principal, onde o dropdown será atualizado
     }
 
     @PutMapping("/{id}")

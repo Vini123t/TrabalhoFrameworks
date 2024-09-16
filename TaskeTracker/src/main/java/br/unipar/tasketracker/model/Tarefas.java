@@ -1,6 +1,7 @@
 package br.unipar.tasketracker.model;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.time.LocalDateTime;
@@ -16,9 +17,11 @@ public class Tarefas {
     private String descricao;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime dataInicio;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime dataLimite;
 
     @Column(nullable = false)
