@@ -8,6 +8,6 @@ import java.util.List;
 @Repository
 public interface HabitoRepository extends JpaRepository<Habitos, Integer> {
     // Buscar hábitos por ID do usuário
-    List<Habitos> findByUsuarioId(Integer usuarioId);
-    List<Habitos> findbyUsuario(Usuario usuario);
+    List<Habitos> findHabitosByUsuario(Usuario usuario);
+
 }

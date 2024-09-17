@@ -2,6 +2,7 @@ package br.unipar.tasketracker.Controller;
 
 import br.unipar.tasketracker.Service.TarefaService;
 import br.unipar.tasketracker.Service.UsuarioService;
+import br.unipar.tasketracker.dto.TarefasDto;
 import br.unipar.tasketracker.model.Tarefas;
 import br.unipar.tasketracker.model.Usuario;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
@@ -13,78 +14,34 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/tarefas")
 public class TarefaController {
 
     @Autowired
-    private TarefaService tarefaService;
+    private TarefaService tarefasService;
     @Autowired
-    private UsuarioService userService;
+    private UsuarioService usuarioService;
 
     @GetMapping
-    public List<Tarefas> getUserTasks(Authentication authentication) {
-        Usuario user = userService.loadUserByUsername(authentication.getName());
-        return taskService.getUserTasks(user);
+    public List<Tarefas> getTarefasDoUsuario(Authentication authentication) {
+        Usuario usuario = (Usuario) usuarioService.loadUserByEmail(authentication.name());
+        return tarefasService.getTarefasDoUsuario(usuario);
     }
 
     @PostMapping
-    public Task addTask(@RequestBody TaskDto taskDto, Authentication authentication) {
-        User user = userService.loadUserByUsername(authentication.getName());
-        return taskService.addTask(user, taskDto.getTitle(), taskDto.getDescription());
+    public Tarefas adicionarTarefa(@RequestBody TarefasDto tarefaDto, Authentication authentication) {
+        Usuario usuario = (Usuario) usuarioService.loadUserByEmail(authentication.name());
+        return tarefasService.adicionarTarefa(usuario, tarefaDto.getDescricao(), tarefaDto.getDataInicio(), tarefaDto.getDataLimite());
     }
 
     @PostMapping("/{id}/toggle")
-    public Task toggleTaskCompletion(@PathVariable Long id) {
-        return taskService.toggleTaskCompletion(id);
+    public Tarefas alternarConclusaoTarefa(@PathVariable Integer id) {
+        return tarefasService.alternarConclusaoTarefa(id);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public ResponseEntity<?> deletarTarefa(@PathVariable Integer id) {
+        tarefasService.deletarTarefa(id);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping
-    public List<Tarefas> getAllTarefas() {
-        return tarefaService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Tarefas> getTarefaById(@PathVariable Integer id) {
-        Optional<Tarefas> tarefa = tarefaService.findById(id);
-        return tarefa.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/usuario/{usuarioId}")
-    public List<Tarefas> getTarefasByUsuarioId(@PathVariable Integer usuarioId) {
-        return tarefaService.findByUsuarioId(usuarioId);
-    }
-
-    @PostMapping
-    public Tarefas createTarefa(@RequestBody Tarefas tarefa) {
-        return tarefaService.save(tarefa);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Tarefas> updateTarefa(@PathVariable Integer id, @RequestBody Tarefas tarefaDetails) {
-        Optional<Tarefas> tarefa = tarefaService.findById(id);
-        if (tarefa.isPresent()) {
-            tarefaDetails.setId(id);
-            Tarefas updatedTarefa = tarefaService.save(tarefaDetails);
-            return ResponseEntity.ok(updatedTarefa);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTarefa(@PathVariable Integer id) {
-        if (tarefaService.findById(id).isPresent()) {
-            tarefaService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 }

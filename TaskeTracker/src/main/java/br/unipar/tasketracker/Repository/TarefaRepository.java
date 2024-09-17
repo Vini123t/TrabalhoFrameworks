@@ -8,12 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TarefaRepository extends JpaRepository<Tarefas, Integer> {
-    // Buscar tarefas por ID do usuário
-    List<Tarefas> findByUsuarioId(Integer usuarioId);
-
-    // Buscar tarefas concluídas por ID do usuário
-    List<Tarefas> findByUsuarioIdAndConcluidaTrue(Integer usuarioId);
-
-    List<Tarefas> findByUsuario(Usuario usuario);
-
+    List<Tarefas> findTarefasByUsuario(Usuario usuario);
 }

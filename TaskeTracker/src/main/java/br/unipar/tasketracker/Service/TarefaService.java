@@ -2,9 +2,11 @@ package br.unipar.tasketracker.Service;
 
 import br.unipar.tasketracker.Repository.TarefaRepository;
 import br.unipar.tasketracker.model.Tarefas;
+import br.unipar.tasketracker.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,29 +14,29 @@ import java.util.Optional;
 public class TarefaService {
 
     @Autowired
-    private TarefaRepository tarefaRepository;
+    private TarefaRepository tarefasRepository;
 
-    public List<Tarefas> findAll() {
-        return tarefaRepository.findAll();
+    public List<Tarefas> getTarefasDoUsuario(Usuario usuario) {
+        return tarefasRepository.findTarefasByUsuario(usuario);
     }
 
-    public Optional<Tarefas> findById(Integer id) {
-        return tarefaRepository.findById(id);
+    public Tarefas adicionarTarefa(Usuario usuario, String descricao, LocalDateTime dataInicio, LocalDateTime dataLimite) {
+        Tarefas tarefa = new Tarefas();
+        tarefa.setUsuario(usuario);
+        tarefa.setDescricao(descricao);
+        tarefa.setData_inicio(dataInicio);
+        tarefa.setData_limite(dataLimite);
+        tarefa.setConcluida(false);
+        return tarefasRepository.save(tarefa);
     }
 
-    public List<Tarefas> findByUsuarioId(Integer usuarioId) {
-        return tarefaRepository.findByUsuarioId(usuarioId);
+    public Tarefas alternarConclusaoTarefa(Integer tarefaId) {
+        Tarefas tarefa = tarefasRepository.findById(tarefaId).orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+        tarefa.setConcluida(!tarefa.getConcluida());
+        return tarefasRepository.save(tarefa);
     }
 
-    public List<Tarefas> findConcluidasByUsuarioId(Integer usuarioId) {
-        return tarefaRepository.findByUsuarioIdAndConcluidaTrue(usuarioId);
-    }
-
-    public Tarefas save(Tarefas tarefa) {
-        return tarefaRepository.save(tarefa);
-    }
-
-    public void deleteById(Integer id) {
-        tarefaRepository.deleteById(id);
+    public void deletarTarefa(Integer tarefaId) {
+        tarefasRepository.deleteById(tarefaId);
     }
 }

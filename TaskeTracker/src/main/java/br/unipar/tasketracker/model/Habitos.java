@@ -1,37 +1,29 @@
 package br.unipar.tasketracker.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 
 import java.util.List;
 
+@Data
 @Entity
+@Table(name = "habitos")
 public class Habitos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
     private String descricao;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "habito", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<HabitoHistorico> historico;
+    @OneToMany(mappedBy = "habito")
+    private List<HabitoHistorico> historicos;
 
-    // Construtores
-    public Habitos() {
-    }
-
-    public Habitos(String descricao, Usuario usuario) {
-        this.descricao = descricao;
-        this.usuario = usuario;
-    }
-
-    // Getters e Setters
     public Integer getId() {
         return id;
     }
@@ -56,11 +48,11 @@ public class Habitos {
         this.usuario = usuario;
     }
 
-    public List<HabitoHistorico> getHistorico() {
-        return historico;
+    public List<HabitoHistorico> getHistoricos() {
+        return historicos;
     }
 
-    public void setHistorico(List<HabitoHistorico> historico) {
-        this.historico = historico;
+    public void setHistoricos(List<HabitoHistorico> historicos) {
+        this.historicos = historicos;
     }
 }

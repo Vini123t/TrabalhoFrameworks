@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/nome_do_seu_banco";  // Substitua com a URL do seu banco de dados
-    private static final String USER = "seu_usuario";  // Substitua pelo seu usuário
-    private static final String PASSWORD = "sua_senha";  // Substitua pela sua senha
+    private static final String URL = "jdbc:mysql://localhost:3306/task-tracker";  // Substitua com a URL do seu banco de dados
+    private static final String USER = "postgres";  // Substitua pelo seu usuário
+    private static final String PASSWORD = "0106";  // Substitua pela sua senha
 
     public static Connection getConnection() {
         try {

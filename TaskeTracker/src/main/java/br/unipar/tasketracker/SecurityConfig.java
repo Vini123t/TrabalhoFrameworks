@@ -12,17 +12,25 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .requestMatchers("/login", "/resources/**").permitAll()  // Permitir acesso ao login sem autenticação
-                .anyRequest().authenticated()  // Exigir autenticação para qualquer outra página
-                .and()
-                .formLogin()
-                .loginPage("/login")  // Especifica a página de login
-                .permitAll()  // Permitir acesso à página de login sem estar autenticado
-                .and()
-                .logout()
-                .permitAll();
+    @Bean
+    protected SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .authorizeRequests(auth -> auth
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/login").permitAll()  // Permitir acesso ao login sem autenticação
+                .requestMatchers("/tarefas").permitAll()
+
+                .anyRequest().authenticated()
+                )
+                .formLogin(form -> form.defaultSuccessUrl("/tarefas", true))
+                .logout(config -> config.logoutSuccessUrl("/login"))
+                .build();
+
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 }

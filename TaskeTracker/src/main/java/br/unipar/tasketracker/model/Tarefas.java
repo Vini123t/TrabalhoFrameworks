@@ -1,46 +1,29 @@
 package br.unipar.tasketracker.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 
 import java.time.LocalDateTime;
 
+@Data
 @Entity
+@Table(name = "tarefas")
 public class Tarefas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
     private String descricao;
-
-    @Column(nullable = false)
-    private LocalDateTime dataInicio;
-
-    @Column(nullable = false)
-    private LocalDateTime dataLimite;
-
-    @Column(nullable = false)
+    private LocalDateTime data_inicio;
+    private LocalDateTime data_limite;
     private Boolean concluida;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    // Construtores
-    public Tarefas() {
-    }
-
-    public Tarefas(String descricao, LocalDateTime dataInicio, LocalDateTime dataLimite, Boolean concluida, Usuario usuario) {
-        this.descricao = descricao;
-        this.dataInicio = dataInicio;
-        this.dataLimite = dataLimite;
-        this.concluida = concluida;
-        this.usuario = usuario;
-    }
-
-    // Getters e Setters
     public Integer getId() {
         return id;
     }
@@ -57,20 +40,20 @@ public class Tarefas {
         this.descricao = descricao;
     }
 
-    public LocalDateTime getDataInicio() {
-        return dataInicio;
+    public LocalDateTime getData_inicio() {
+        return data_inicio;
     }
 
-    public void setDataInicio(LocalDateTime dataInicio) {
-        this.dataInicio = dataInicio;
+    public void setData_inicio(LocalDateTime data_inicio) {
+        this.data_inicio = data_inicio;
     }
 
-    public LocalDateTime getDataLimite() {
-        return dataLimite;
+    public LocalDateTime getData_limite() {
+        return data_limite;
     }
 
-    public void setDataLimite(LocalDateTime dataLimite) {
-        this.dataLimite = dataLimite;
+    public void setData_limite(LocalDateTime data_limite) {
+        this.data_limite = data_limite;
     }
 
     public Boolean getConcluida() {
