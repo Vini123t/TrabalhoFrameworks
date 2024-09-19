@@ -1,106 +1,128 @@
 // index.js
 document.addEventListener('DOMContentLoaded', function() {
-    const novaTarefaBtn = document.querySelector('#novaTarefa');
-    const novoHabitoBtn = document.querySelector('#novoHabito');
-    const listaTarefas = document.querySelector('#listaTarefas');
-    const listaHabitos = document.querySelector('#listaHabitos');
+    const newTaskBtn = document.querySelector('.btn-outline-primary[href="#"]');
+    const newHabitBtn = newTaskBtn.nextElementSibling;
+    const taskList = document.querySelector('#tasks');
+    const habitList = document.querySelector('#habits');
 
-    function fetchTarefas() {
-        fetch('/api/tarefas', {
+    function fetchTasks() {
+        fetch('http://localhost:8080/api/tasks', {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-            }
+            },
+            credentials: 'include'
         })
             .then(response => response.json())
-            .then(tarefas => {
-                listaTarefas.innerHTML = '';
-                tarefas.forEach(tarefa => {
+            .then(tasks => {
+                taskList.innerHTML = '';
+                tasks.forEach(task => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                    <span class="${tarefa.concluida ? 'text-decoration-line-through' : ''}">
-                        ${tarefa.descricao} (Início: ${new Date(tarefa.dataInicio).toLocaleDateString()} - 
-                        Limite: ${new Date(tarefa.dataLimite).toLocaleDateString()})
-                    </span>
+                    <span class="${task.completed ? 'text-decoration-line-through' : ''}">${task.title}</span>
                     <div>
-                        <button onclick="alternarConclusaoTarefa(${tarefa.id})">
-                            ${tarefa.concluida ? 'Desmarcar' : 'Marcar'}
+                        <button class="btn btn-sm btn-outline-secondary toggle-task" data-id="${task.id}">
+                            ${task.completed ? 'Desmarcar' : 'Marcar'}
                         </button>
-                        <button onclick="deletarTarefa(${tarefa.id})">Excluir</button>
+                        <button class="btn btn-sm btn-outline-danger delete-task" data-id="${task.id}">Excluir</button>
                     </div>
                 `;
-                    listaTarefas.appendChild(li);
+                    taskList.appendChild(li);
                 });
             })
-            .catch(error => console.error('Erro ao buscar tarefas:', error));
+            .catch(error => console.error('Error fetching tasks:', error));
     }
 
-    function fetchHabitos() {
-        fetch('/api/habitos', {
+    function fetchHabits() {
+        fetch('http://localhost:8080/api/habits', {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-            }
+            },
+            credentials: 'include'
         })
             .then(response => response.json())
-            .then(habitos => {
-                listaHabitos.innerHTML = '';
-                habitos.forEach(habito => {
+            .then(habits => {
+                habitList.innerHTML = '';
+                habits.forEach(habit => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                    <span>${habito.descricao}</span>
+                    <span>${habit.title}</span>
                     <div>
-                        <button onclick="marcarHabitoComoFeito(${habito.id})">Marcar como feito</button>
+                        <button class="btn btn-sm btn-outline-success toggle-habit" data-id="${habit.id}">
+                            Marcar
+                        </button>
                     </div>
                 `;
-                    listaHabitos.appendChild(li);
+                    habitList.appendChild(li);
                 });
             })
-            .catch(error => console.error('Erro ao buscar hábitos:', error));
+            .catch(error => console.error('Error fetching habits:', error));
     }
 
-    window.alternarConclusaoTarefa = function(tarefaId) {
-        fetch(`/api/tarefas/${tarefaId}/toggle`, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-            }
-        })
-            .then(() => fetchTarefas())
-            .catch(error => console.error('Erro ao alternar conclusão da tarefa:', error));
-    };
-
-    window.deletarTarefa = function(tarefaId) {
-        if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
-            fetch(`/api/tarefas/${tarefaId}`, {
+    taskList.addEventListener('click', function(e) {
+        if (e.target.classList.contains('toggle-task')) {
+            const taskId = e.target.getAttribute('data-id');
+            fetch(`http://localhost:8080/api/tasks/${taskId}/toggle`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                credentials: 'include'
+            })
+                .then(() => fetchTasks())
+                .catch(error => console.error('Error toggling task:', error));
+        } else if (e.target.classList.contains('delete-task')) {
+            const taskId = e.target.getAttribute('data-id');
+            fetch(`http://localhost:8080/api/tasks/${taskId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-                }
+                },
+                credentials: 'include'
             })
-                .then(() => fetchTarefas())
-                .catch(error => console.error('Erro ao deletar tarefa:', error));
+                .then(() => fetchTasks())
+                .catch(error => console.error('Error deleting task:', error));
         }
-    };
-
-    window.marcarHabitoComoFeito = function(habitoId) {
-        fetch(`/api/habitos/${habitoId}/marcar`, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-            }
-        })
-            .then(() => fetchHabitos())
-            .catch(error => console.error('Erro ao marcar hábito como feito:', error));
-    };
-
-    novaTarefaBtn.addEventListener('click', function() {
-        window.location.href = '/add-tarefa.html';
     });
 
-    novoHabitoBtn.addEventListener('click', function() {
-        window.location.href = '/add-habito.html';
+    habitList.addEventListener('click', function(e) {
+        if (e.target.classList.contains('toggle-habit')) {
+            const habitId = e.target.getAttribute('data-id');
+            fetch(`http://localhost:8080/api/habits/${habitId}/toggle`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                credentials: 'include'
+            })
+                .then(() => fetchHabits())
+                .catch(error => console.error('Error toggling habit:', error));
+        }
     });
 
-    // Buscar tarefas e hábitos quando a página carregar
-    fetchTarefas();
-    fetchHabitos();
+    newTaskBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'add-task.html';
+    });
+
+    newHabitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const habitTitle = prompt('Enter new habit title:');
+        if (habitTitle) {
+            fetch('http://localhost:8080/api/habits', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                body: JSON.stringify({ title: habitTitle }),
+                credentials: 'include'
+            })
+                .then(() => fetchHabits())
+                .catch(error => console.error('Error adding habit:', error));
+        }
+    });
+
+    // Fetch tasks and habits when the page loads
+    fetchTasks();
+    fetchHabits();
 });

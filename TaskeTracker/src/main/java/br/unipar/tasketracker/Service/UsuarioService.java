@@ -19,6 +19,14 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public boolean validateUser(String username, String password) {
+        Optional<Usuario> user = usuarioRepository.findByEmail(username);
+        if (user.isPresent()) {
+            return passwordEncoder.matches(password, user.get().getSenha());
+        }
+        return false;
+    }
+
 
     public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
