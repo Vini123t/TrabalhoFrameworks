@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela Inicial - Task Tracker</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body>
+
+<section class="section">
+    <div class="container">
+        <h1 class="title has-text-warning">Tarefas</h1>
+        <div class="has-text-right mb-4">
+            <a href="/formulario/tarefa" class="button is-warning">
+                <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                <span>Adicionar Tarefa</span>
+            </a>
+        </div>
+        <div class="box">
+            <table class="table is-striped is-hoverable is-fullwidth mt-4">
+                <thead>
+                <tr>
+                    <th class="has-text-warning-light">Usuário</th>
+                    <th class="has-text-warning-light">Descrição</th>
+                    <th class="has-text-warning-light">Data Início</th>
+                    <th class="has-text-warning-light">Data Limite</th>
+                    <th class="has-text-warning-light">Concluída</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tarefa : ${tarefas}">
+                    <td th:text="${tarefa.usuario.nome}"></td>
+                    <td th:text="${tarefa.descricao}"></td>
+                    <td th:text="${tarefa.dataInicio}"></td>
+                    <td th:text="${tarefa.dataLimite}"></td>
+                    <td>
+                        <form th:action="@{/tarefas/concluir(id=${tarefa.id})}" method="post">
+                            <button type="submit" class="button is-small is-link">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+    <div class="container">
+        <h1 class="title has-text-warning">Hábitos</h1>
+        <div class="has-text-right mb-4">
+            <a href="/formulario/habito" class="button is-warning">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                <span>Adicionar Hábito</span>
+            </a>
+        </div>
+        <div class="box">
+            <table class="table is-striped is-hoverable is-fullwidth mt-4">
+                <thead>
+                <tr>
+                    <th class="has-text-warning-light">Usuário</th>
+                    <th class="has-text-warning-light">Descrição</th>
+                    <th class="has-text-warning-light">Domingo</th>
+                    <th class="has-text-warning-light">Segunda</th>
+                    <th class="has-text-warning-light">Terça</th>
+                    <th class="has-text-warning-light">Quarta</th>
+                    <th class="has-text-warning-light">Quinta</th>
+                    <th class="has-text-warning-light">Sexta</th>
+                    <th class="has-text-warning-light">Sábado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="habito : ${habitos}">
+                    <td th:text="${habito.usuario.nome}"></td>
+                    <td th:text="${habito.descricao}"></td>
+
+                    <td>
+                        <form th:action="@{/habitos/concluir(id=${habito.id})}" method="post" onsubmit="disableButton(this)">
+                            <button type="submit" class="button is-small is-link"
+                                    th:classappend="${habito.historico.contains(today) ? 'is-light' : ''}"
+                                    id="btn-${habito.id}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </td>
+
+
+                    <td>
+                        <form th:action="@{/habitos/concluir(id=${habito.id})}" method="post">
+                            <button type="submit" class="button is-small is-link"
+                                    th:classappend="${habito.historico.contains(today) ? 'is-light' : ''}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/habitos/concluir(id=${habito.id})}" method="post">
+                            <button type="submit" class="button is-small is-link"
+                                    th:classappend="${habito.historico.contains(today) ? 'is-light' : ''}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/habitos/concluir(id=${habito.id})}" method="post">
+                            <button type="submit" class="button is-small is-link"
+                                    th:classappend="${habito.historico.contains(today) ? 'is-light' : ''}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/habitos/concluir(id=${habito.id})}" method="post">
+                            <button type="submit" class="button is-small is-link"
+                                    th:classappend="${habito.historico.contains(today) ? 'is-light' : ''}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/habitos/concluir(id=${habito.id})}" method="post">
+                            <button type="submit" class="button is-small is-link"
+                                    th:classappend="${habito.historico.contains(today) ? 'is-light' : ''}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/habitos/concluir(id=${habito.id})}" method="post">
+                            <button type="submit" class="button is-small is-link"
+                                    th:classappend="${habito.historico.contains(today) ? 'is-light' : ''}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                    </td>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inserir Hábitos</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    >
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h1 class="title has-text-warning">Adicionar Hábito</h1>
+        <form action="/habitos/adicionar" method="POST">
+            <div class="field">
+                <label class="label has-text-warning-light">Descrição</label>
+                <div class="control">
+                    <input class="input" type="text" name="descricao" placeholder="Descreva seu hábito" required>
+                </div>
+            </div>
+            <!-- Caixa de Seleção para Usuários -->
+            <div class="field">
+                <label class="label has-text-warning-light">Usuários</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="usuarios" required>
+                            <!-- Lista os usuários do banco -->
+                            <option th:each="usuario : ${usuarios}" th:value="${usuario.nome}" th:text="${usuario.nome}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <button class="button is-link" type="submit">Adicionar Hábito</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>
