@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Usuário</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-top: 30px;
+        }
+
+        table {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            vertical-align: middle !important;
+        }
+
+        .badge {
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .table-success {
+            background-color: #d4edda !important;
+        }
+
+        .table-danger {
+            background-color: #f8d7da !important;
+        }
+
+        .btn-add {
+            float: right;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Bem-vindo, <span th:text="${usuario.nome}"></span>!</h2>
+    <p>Email: <span th:text="${usuario.email}"></span></p>
+
+    <!-- Exibir Tarefas -->
+    <h3>Suas Tarefas</h3>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Data Início</th>
+            <th>Data Limite</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tarefa : ${tarefas}" th:class="${tarefa.concluida} ? 'table-success' : ''">
+            <td th:text="${tarefa.descricao}"></td>
+            <td th:text="${#dates.format(tarefa.dataInicio, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#dates.format(tarefa.dataLimite, 'dd/MM/yyyy')}"></td>
+            <td>
+                <span th:if="${tarefa.concluida}" class="badge bg-success">Concluída</span>
+                <span th:if="${!tarefa.concluida}" class="badge bg-warning">Pendente</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Exibir Hábitos -->
+    <h3>Seus Hábitos</h3>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="habito : ${habitos}">
+            <td th:text="${habito.descricao}"></td>
+            <td>
+                <!-- Botão para marcar hábito como feito -->
+                <form method="post" th:action="@{/habito/historico/marcar}">
+                    <input type="hidden" th:value="${habito.id}" name="habitoId" />
+                    <button class="btn btn-primary" type="submit">Marcar como Feito</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="/logout" class="btn btn-danger">Logout</a>
+</div>
+</body>
+</html>

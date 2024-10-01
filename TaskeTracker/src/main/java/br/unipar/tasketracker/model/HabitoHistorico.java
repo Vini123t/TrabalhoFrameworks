@@ -1,30 +1,22 @@
 package br.unipar.tasketracker.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@Data
 @Entity
-@Table(name = "habito_historico")
 public class HabitoHistorico {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private LocalDateTime data;
+    private LocalDate data;
 
     @ManyToOne
     @JoinColumn(name = "id_habito")
-    private Habitos habito;
+    private Habito habito;
 
-    // Construtores
-    public HabitoHistorico() {
-    }
+    // Getters e Setters
 
     public Integer getId() {
         return id;
@@ -34,21 +26,19 @@ public class HabitoHistorico {
         this.id = id;
     }
 
-    public LocalDateTime getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(LocalDateTime data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 
-    public Habitos getHabito() {
+    public Habito getHabito() {
         return habito;
     }
 
-    public void setHabito(Habitos habito) {
+    public void setHabito(Habito habito) {
         this.habito = habito;
     }
 }
-
-

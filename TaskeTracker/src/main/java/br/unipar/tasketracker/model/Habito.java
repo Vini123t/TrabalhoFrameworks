@@ -1,16 +1,10 @@
 package br.unipar.tasketracker.model;
 
+import br.unipar.tasketracker.model.Usuario;
 import jakarta.persistence.*;
-import lombok.Data;
 
-
-import java.util.List;
-
-@Data
 @Entity
-@Table(name = "habitos")
-public class Habitos {
-
+public class Habito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,8 +15,7 @@ public class Habitos {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "habito")
-    private List<HabitoHistorico> historicos;
+    // Getters e Setters
 
     public Integer getId() {
         return id;
@@ -46,13 +39,5 @@ public class Habitos {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
-    }
-
-    public List<HabitoHistorico> getHistoricos() {
-        return historicos;
-    }
-
-    public void setHistoricos(List<HabitoHistorico> historicos) {
-        this.historicos = historicos;
     }
 }

@@ -4,25 +4,25 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
-@Table(name = "tarefas")
-public class Tarefas {
-
+public class Tarefa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String descricao;
-    private LocalDateTime data_inicio;
-    private LocalDateTime data_limite;
+    private Timestamp dataInicio;
+    private Timestamp dataLimite;
     private Boolean concluida;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
+
+    // Getters e Setters
 
     public Integer getId() {
         return id;
@@ -40,20 +40,20 @@ public class Tarefas {
         this.descricao = descricao;
     }
 
-    public LocalDateTime getData_inicio() {
-        return data_inicio;
+    public Timestamp getDataInicio() {
+        return dataInicio;
     }
 
-    public void setData_inicio(LocalDateTime data_inicio) {
-        this.data_inicio = data_inicio;
+    public void setDataInicio(Timestamp dataInicio) {
+        this.dataInicio = dataInicio;
     }
 
-    public LocalDateTime getData_limite() {
-        return data_limite;
+    public Timestamp getDataLimite() {
+        return dataLimite;
     }
 
-    public void setData_limite(LocalDateTime data_limite) {
-        this.data_limite = data_limite;
+    public void setDataLimite(Timestamp dataLimite) {
+        this.dataLimite = dataLimite;
     }
 
     public Boolean getConcluida() {
@@ -72,4 +72,3 @@ public class Tarefas {
         this.usuario = usuario;
     }
 }
-

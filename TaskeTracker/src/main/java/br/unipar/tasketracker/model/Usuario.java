@@ -19,10 +19,10 @@ public class Usuario {
     private String senha;
 
     @OneToMany(mappedBy = "usuario")
-    private List<Tarefas> tarefas;
+    private List<Tarefa> tarefas;
 
     @OneToMany(mappedBy = "usuario")
-    private List<Habitos> habitos;
+    private List<Habito> habitos;
 
     // Construtores
     public Usuario() {
@@ -69,19 +69,19 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public List<Tarefas> getTarefas() {
+    public List<Tarefa> getTarefas() {
         return tarefas;
     }
 
-    public void setTarefas(List<Tarefas> tarefas) {
+    public void setTarefas(List<Tarefa> tarefas) {
         this.tarefas = tarefas;
     }
 
-    public List<Habitos> getHabitos() {
+    public List<Habito> getHabitos() {
         return habitos;
     }
 
-    public void setHabitos(List<Habitos> habitos) {
+    public void setHabitos(List<Habito> habitos) {
         this.habitos = habitos;
     }
 }

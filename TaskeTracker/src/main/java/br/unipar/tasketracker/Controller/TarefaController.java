@@ -1,47 +1,44 @@
-package br.unipar.tasketracker.Controller;
-
 import br.unipar.tasketracker.Service.TarefaService;
-import br.unipar.tasketracker.Service.UsuarioService;
-import br.unipar.tasketracker.dto.TarefasDto;
-import br.unipar.tasketracker.model.Tarefas;
-import br.unipar.tasketracker.model.Usuario;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import br.unipar.tasketracker.model.Tarefa;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tarefas")
 public class TarefaController {
 
     @Autowired
-    private TarefaService tarefasService;
-    @Autowired
-    private UsuarioService usuarioService;
+    private TarefaService tarefaService;
 
-    @GetMapping
-    public List<Tarefas> getTarefasDoUsuario(Authentication authentication) {
-        Usuario usuario = (Usuario) usuarioService.loadUserByEmail(authentication.name());
-        return tarefasService.getTarefasDoUsuario(usuario);
+    // Listar todas as tarefas de um usuário
+    @GetMapping("/usuario/{usuarioId}")
+    public List<Tarefa> listarTarefasPorUsuario(@PathVariable Integer usuarioId) {
+        return tarefaService.getTarefasPorUsuario(usuarioId);
     }
 
+    // Criar uma nova tarefa
     @PostMapping
-    public Tarefas adicionarTarefa(@RequestBody TarefasDto tarefaDto, Authentication authentication) {
-        Usuario usuario = (Usuario) usuarioService.loadUserByEmail(authentication.name());
-        return tarefasService.adicionarTarefa(usuario, tarefaDto.getDescricao(), tarefaDto.getDataInicio(), tarefaDto.getDataLimite());
+    public Tarefa criarTarefa(@RequestBody Tarefa tarefa) {
+        return tarefaService.criarTarefa(tarefa);
     }
 
-    @PostMapping("/{id}/toggle")
-    public Tarefas alternarConclusaoTarefa(@PathVariable Integer id) {
-        return tarefasService.alternarConclusaoTarefa(id);
+    // Editar uma tarefa existente
+    @PutMapping("/{id}")
+    public Tarefa editarTarefa(@PathVariable Integer id, @RequestBody Tarefa tarefaAtualizada) {
+        return tarefaService.atualizarTarefa(id, tarefaAtualizada);
     }
 
+    // Marcar tarefa como concluída
+    @PutMapping("/{id}/concluir")
+    public Tarefa concluirTarefa(@PathVariable Integer id) {
+        return tarefaService.marcarComoConcluida(id);
+    }
+
+    // Deletar uma tarefa
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletarTarefa(@PathVariable Integer id) {
-        tarefasService.deletarTarefa(id);
-        return ResponseEntity.ok().build();
+    public void deletarTarefa(@PathVariable Integer id) {
+        tarefaService.deletarTarefa(id);
     }
 }

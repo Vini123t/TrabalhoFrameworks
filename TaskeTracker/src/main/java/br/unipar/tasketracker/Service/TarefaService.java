@@ -1,42 +1,61 @@
 package br.unipar.tasketracker.Service;
 
 import br.unipar.tasketracker.Repository.TarefaRepository;
-import br.unipar.tasketracker.model.Tarefas;
-import br.unipar.tasketracker.model.Usuario;
+import br.unipar.tasketracker.exception.ResourceNotFoundException;
+import br.unipar.tasketracker.model.Tarefa;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TarefaService {
 
     @Autowired
-    private TarefaRepository tarefasRepository;
+    private TarefaRepository tarefaRepository;
 
-    public List<Tarefas> getTarefasDoUsuario(Usuario usuario) {
-        return tarefasRepository.findTarefasByUsuario(usuario);
+    // Listar todas as tarefas de um usuário
+    public List<Tarefa> getTarefasPorUsuario(Integer usuarioId) {
+        return tarefaRepository.findByUsuarioId(usuarioId);
     }
 
-    public Tarefas adicionarTarefa(Usuario usuario, String descricao, LocalDateTime dataInicio, LocalDateTime dataLimite) {
-        Tarefas tarefa = new Tarefas();
-        tarefa.setUsuario(usuario);
-        tarefa.setDescricao(descricao);
-        tarefa.setData_inicio(dataInicio);
-        tarefa.setData_limite(dataLimite);
-        tarefa.setConcluida(false);
-        return tarefasRepository.save(tarefa);
+
+    // Criar uma nova tarefa
+    public Tarefa criarTarefa(Tarefa tarefa) {
+        return tarefaRepository.save(tarefa);
     }
 
-    public Tarefas alternarConclusaoTarefa(Integer tarefaId) {
-        Tarefas tarefa = tarefasRepository.findById(tarefaId).orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
-        tarefa.setConcluida(!tarefa.getConcluida());
-        return tarefasRepository.save(tarefa);
+    // Atualizar uma tarefa existente
+    public Tarefa atualizarTarefa(Integer id, Tarefa tarefaAtualizada) {
+        Tarefa tarefa = encontrarTarefaPorId(id);
+
+        // Atualizando os campos
+        tarefa.setDescricao(tarefaAtualizada.getDescricao());
+        tarefa.setDataInicio(tarefaAtualizada.getDataInicio());
+        tarefa.setDataLimite(tarefaAtualizada.getDataLimite());
+        tarefa.setConcluida(tarefaAtualizada.getConcluida());
+
+        return tarefaRepository.save(tarefa);
     }
 
-    public void deletarTarefa(Integer tarefaId) {
-        tarefasRepository.deleteById(tarefaId);
+    // Marcar uma tarefa como concluída
+    public Tarefa marcarComoConcluida(Integer id) {
+        Tarefa tarefa = encontrarTarefaPorId(id);
+        tarefa.setConcluida(true);
+
+        return tarefaRepository.save(tarefa);
+    }
+
+    // Método auxiliar para encontrar tarefa e evitar repetição de código
+    private Tarefa encontrarTarefaPorId(Integer id) {
+        return tarefaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tarefa não encontrada"));
+    }
+
+
+    // Deletar uma tarefa
+    public void deletarTarefa(Integer id) {
+        tarefaRepository.deleteById(id);
     }
 }

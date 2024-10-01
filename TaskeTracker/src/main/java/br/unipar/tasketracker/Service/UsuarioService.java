@@ -1,6 +1,7 @@
 package br.unipar.tasketracker.Service;
 
 import br.unipar.tasketracker.Repository.UsuarioRepository;
+import br.unipar.tasketracker.exception.AuthenticationException;
 import br.unipar.tasketracker.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,32 +17,21 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
-    public boolean validateUser(String username, String password) {
-        Optional<Usuario> user = usuarioRepository.findByEmail(username);
-        if (user.isPresent()) {
-            return passwordEncoder.matches(password, user.get().getSenha());
-        }
-        return false;
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
+    public Usuario login(String email, String senha) {
+        // Buscar o usuário pelo email
+        Usuario usuario = usuarioRepository.findByEmail(email);
 
-
-    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
-        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
-        if (usuario.isEmpty()) {
-            throw new UsernameNotFoundException("Usuário não encontrado");
+        // Verificar se a senha está correta
+        if (!usuario.getSenha().equals(senha)) {
+            throw new AuthenticationException("Senha incorreta");
         }
-        return new org.springframework.security.core.userdetails.User(usuario.get().getEmail(), usuario.get().getSenha(), Collections.emptyList());
-    }
 
-    public Usuario registrarUsuario(String nome, String email, String senha) {
-        Usuario usuario = new Usuario();
-        usuario.setNome(nome);
-        usuario.setEmail(email);
-        usuario.setSenha(passwordEncoder.encode(senha));
-        return usuarioRepository.save(usuario);
+        return usuario; // Se o email e senha estiverem corretos, retornar o usuário
     }
 }
+
 

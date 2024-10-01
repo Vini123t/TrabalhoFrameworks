@@ -3,51 +3,49 @@ package br.unipar.tasketracker.Service;
 import br.unipar.tasketracker.Repository.HabitoHistoricoRepository;
 import br.unipar.tasketracker.Repository.HabitoRepository;
 import br.unipar.tasketracker.model.HabitoHistorico;
-import br.unipar.tasketracker.model.Habitos;
-import br.unipar.tasketracker.model.Usuario;
+import br.unipar.tasketracker.model.Habito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class HabitoService {
 
     @Autowired
-    private HabitoRepository habitosRepository;
+    private HabitoRepository habitoRepository;
+
     @Autowired
     private HabitoHistoricoRepository habitoHistoricoRepository;
 
-    public List<Habitos> getHabitosDoUsuario(Usuario usuario) {
-        return habitosRepository.findHabitosByUsuario(usuario);
+    // Listar hábitos de um usuário
+    public List<Habito> getHabitosPorUsuario(Integer usuarioId) {
+        return habitoRepository.findByUsuarioId(usuarioId);
     }
 
-    public Habitos adicionarHabito(Usuario usuario, String descricao) {
-        Habitos habito = new Habitos();
-        habito.setUsuario(usuario);
-        habito.setDescricao(descricao);
-        return habitosRepository.save(habito);
+    // Criar um novo hábito
+    public Habito criarHabito(Habito habito) {
+        return habitoRepository.save(habito);
     }
 
-    public HabitoHistorico marcarHabitoComoFeito(Integer habitoId) {
-        Habitos habito = habitosRepository.findById(habitoId).orElseThrow(() -> new RuntimeException("Hábito não encontrado"));
+    // Marcar hábito como feito (adicionar ao histórico)
+    public void marcarHabitoComoFeito(Integer habitoId) {
         HabitoHistorico historico = new HabitoHistorico();
-        historico.setHabito(habito);
-        LocalDateTime dateTime = LocalDateTime.now();
-        LocalDate date = dateTime.toLocalDate();
-        historico.setData(LocalDateTime.now());
-        return habitoHistoricoRepository.save(historico);
+        historico.setId(habitoId);
+        historico.setData(LocalDate.now());
+        habitoHistoricoRepository.save(historico);
     }
 
-    public List<HabitoHistorico> getHistoricoHabito(Habitos habito, LocalDateTime dataInicio, LocalDateTime dataFim) {
-        return habitoHistoricoRepository.findByHabitoAndDataBetween(habito, dataInicio, dataFim);
+
+    // Listar histórico de um hábito
+    public List<HabitoHistorico> getHistoricoPorHabito(Integer habitoId) {
+        return habitoHistoricoRepository.findByHabitoId(habitoId);
     }
 
-    public Optional<Habitos> getHabitoById(Integer id) {
-        Optional<Habitos> habitos =habitosRepository.findById(id);
-        return habitos;
+    // Deletar um hábito
+    public void deletarHabito(Integer id) {
+        habitoRepository.deleteById(id);
     }
 }
