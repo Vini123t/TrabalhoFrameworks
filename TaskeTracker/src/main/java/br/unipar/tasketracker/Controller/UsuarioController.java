@@ -18,34 +18,22 @@ import java.util.List;
 @RequestMapping("/usuario")
 public class UsuarioController {
 
-    @Autowired
-    private TarefaService tarefaService;
-
-    @Autowired
-    private HabitoService habitoService;
-
     @GetMapping("/telainicial")
     public String telaInicial(HttpSession session, Model model) {
-        // Verificar se o usuário está logado
+        // Obter o usuário logado da sessão
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
 
         if (usuario == null) {
-            // Se não houver usuário logado, redirecionar para a página de login
+            // Redirecionar para o login se o usuário não estiver logado
             return "redirect:/login";
         }
 
-        // Buscar tarefas e hábitos do usuário
-        List<Tarefa> tarefas = tarefaService.getTarefasPorUsuario(usuario.getId());
-        List<Habito> habitos = habitoService.getHabitosPorUsuario(usuario.getId());
-
-        // Passar os dados para o front-end
+        // Exibir as informações do usuário na tela inicial
         model.addAttribute("usuario", usuario);
-        model.addAttribute("tarefas", tarefas);
-        model.addAttribute("habitos", habitos);
-
-        return "telainicial"; // Nome da view (HTML)
+        return "telainicial";
     }
 }
+
 
 
 
